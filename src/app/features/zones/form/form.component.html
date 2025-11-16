@@ -1,0 +1,17 @@
+<h3>{{ editingId ? 'Editar Zona' : 'Nueva Zona' }}</h3>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <label>
+    Nombre:
+    <input formControlName="nombre" />
+  </label>
+  <div *ngIf="form.controls['nombre'].invalid && form.controls['nombre'].touched">
+    Nombre obligatorio (mínimo 2 caracteres)
+  </div>
+
+  <button type="submit">{{ editingId ? 'Guardar cambios' : 'Crear' }}</button>
+  <button type="button" (click)="cancel()">Cancelar</button>
+</form>
+
+<!-- LISTA DE MESAS solo si estamos editando la zona -->
+<app-mesas-list *ngIf="editingId" [zoneId]="editingId"></app-mesas-list>

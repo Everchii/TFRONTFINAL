@@ -1,0 +1,32 @@
+<h3>Nueva Mesa (Global)</h3>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <label>
+    Restaurante:
+    <select formControlName="restaurantId">
+      <option value="" disabled selected>-- Seleccione un restaurante --</option>
+      <option *ngFor="let r of restaurants" [value]="r.id">{{ r.nombre }}</option>
+    </select>
+  </label>
+
+  <label>
+    Zona:
+    <select formControlName="zoneId">
+      <option value="" disabled selected>-- Seleccione una zona --</option>
+      <option *ngFor="let z of zones" [value]="z.id">{{ z.nombre }}</option>
+    </select>
+  </label>
+
+  <label>
+    Número de mesa:
+    <input type="number" formControlName="numero" />
+  </label>
+
+  <label>
+    Capacidad:
+    <input type="number" formControlName="capacidad" />
+  </label>
+
+  <button type="submit">Crear Mesa</button>
+  <button type="button" (click)="cancel()">Cancelar</button>
+</form>

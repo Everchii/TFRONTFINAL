@@ -1,0 +1,15 @@
+<h2>Restaurantes</h2>
+
+<ul>
+  <li *ngFor="let r of restaurants">
+    {{ r.nombre }}
+    <button (click)="edit(r.id)">Editar</button>
+    <button (click)="remove(r.id)">Eliminar</button>
+    <button (click)="createNewZone(r.id)">Nueva Zona</button>
+  </li>
+</ul>
+
+<button (click)="createNew()">Nuevo restaurante</button>
+
+<!-- BOTÓN NUEVO: Crear Mesa Global desde el menú principal -->
+<button (click)="createNewMesaGlobal()">Nueva Mesa Global</button>

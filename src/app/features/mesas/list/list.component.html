@@ -1,0 +1,13 @@
+<h3>Mesas</h3>
+
+<!-- <button (click)="navigateToNewGlobal()">Nueva Mesa Global</button> -->
+
+<ul>
+  <li *ngFor="let m of mesas">
+    Mesa {{ m.numero }} - Capacidad: {{ m.capacidad }}
+    <button (click)="edit(m.id)">Editar</button>
+    <button (click)="remove(m.id)">Eliminar</button>
+  </li>
+</ul>
+
+<button (click)="createNew()">Nueva Mesa</button>

@@ -1,0 +1,19 @@
+<h2>{{ editingId ? 'Editar Restaurante' : 'Nuevo Restaurante' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <label>
+    Nombre:
+    <input formControlName="nombre" />
+  </label>
+
+  <button type="submit">{{ editingId ? 'Guardar' : 'Crear' }}</button>
+  <button type="button" (click)="cancel()">Cancelar</button>
+
+  <!-- BOTÓN NUEVA ZONA solo si estamos editando -->
+  <!-- <button *ngIf="editingId" type="button" (click)="createNewZone()">Nueva Zona</button> -->
+</form>
+
+<!-- Lista de zonas (opcional, puedes mantener ZonesListComponent aquí) -->
+<!-- <app-zones-list [restaurantId]="editingId"></app-zones-list> -->
+
+<app-zones-list *ngIf="editingId" [restaurantId]="editingId"></app-zones-list>

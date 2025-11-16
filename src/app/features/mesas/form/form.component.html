@@ -1,0 +1,24 @@
+<h2>{{ editingId ? 'Editar Mesa' : 'Nueva Mesa' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+
+  <label>
+    Número de mesa:
+    <input type="number" formControlName="numero" />
+  </label>
+
+  <label>
+    Capacidad:
+    <input type="number" formControlName="capacidad" />
+  </label>
+
+  <label>
+    Zona:
+    <select formControlName="zoneId">
+      <option *ngFor="let z of zonas" [value]="z.id">{{ z.nombre }}</option>
+    </select>
+  </label>
+
+  <button type="submit">{{ editingId ? 'Guardar' : 'Crear' }}</button>
+  <button type="button" (click)="cancel()">Cancelar</button>
+</form>

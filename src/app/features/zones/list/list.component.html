@@ -1,0 +1,15 @@
+<h3>Zonas</h3>
+
+<button (click)="createNew()">Nueva Zona</button>
+
+<ul *ngIf="zones.length; else empty">
+  <li *ngFor="let z of zones">
+    {{ z.nombre }}
+    <button (click)="edit(z.id)">Editar</button>
+    <button (click)="remove(z.id)">Eliminar</button>
+  </li>
+</ul>
+
+<ng-template #empty>
+  <p>No hay zonas. Creá una.</p>
+</ng-template>
