@@ -24,7 +24,9 @@ export interface Mesa {
 export interface Reservation {
   id: string;
   fecha: string;           // ej: "2025-11-20"
-  hora: string;            // ej: "20:00"
+  // `hora` se mantiene por compatibilidad; preferir `horas` para reservas multi-hora
+  hora?: string;           // ej: "20:00"
+  horas?: string[];        // ej: ["20:00", "21:00"]
   cantidadPersonas: number;
   idMesaAsignada: string;
   nombre: string;

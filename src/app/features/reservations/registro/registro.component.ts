@@ -21,6 +21,7 @@ export class ReservationsRegistroComponent implements OnInit {
   zones: Zone[] = [];
   horarios: string[] = [];
   horariosDisponibles: string[] = [];
+  selectedHoras: string[] = [];
   currentStep: 'restaurant' | 'zone' | 'date-time' | 'people' | 'customer' | 'review' = 'restaurant';
   selectedRestaurant: Restaurant | null = null;
   selectedZone: Zone | null = null;
@@ -42,7 +43,9 @@ export class ReservationsRegistroComponent implements OnInit {
       restaurantId: ['', Validators.required],
       zoneId: ['', Validators.required],
       fecha: ['', Validators.required],
-      hora: ['', Validators.required],
+      // `hora` queda opcional; se usa `horas` para reservas multi-hora
+      hora: [''],
+      horas: [[], Validators.nullValidator],
       cantidadPersonas: [0, [Validators.required, Validators.min(1), Validators.max(50)]],
       nombre: ['', [Validators.required, Validators.minLength(2)]],
       apellido: ['', [Validators.required, Validators.minLength(2)]],
@@ -110,10 +113,24 @@ export class ReservationsRegistroComponent implements OnInit {
   }
 
   // --- Paso 3: Seleccionar Fecha y Hora ---
-  selectDatetime(fecha: string, hora: string): void {
-    this.selectedFecha = fecha;
-    this.selectedHora = hora;
-    this.form.patchValue({ fecha, hora });
+  // --- Paso 3: Seleccionar Fecha y Horas (múltiple) ---
+  toggleHora(hora: string): void {
+    const idx = this.selectedHoras.indexOf(hora);
+    if (idx >= 0) {
+      this.selectedHoras.splice(idx, 1);
+    } else {
+      this.selectedHoras.push(hora);
+    }
+    this.form.patchValue({ horas: this.selectedHoras });
+    this.errorMsg = '';
+  }
+
+  goToPeopleFromDatetime(): void {
+    if (!this.selectedFecha || this.selectedHoras.length === 0) {
+      this.errorMsg = 'Seleccioná al menos una hora antes de continuar';
+      return;
+    }
+    this.form.patchValue({ fecha: this.selectedFecha, horas: this.selectedHoras });
     this.currentStep = 'people';
     this.errorMsg = '';
   }
@@ -126,16 +143,18 @@ export class ReservationsRegistroComponent implements OnInit {
     }
 
     // Validar disponibilidad de mesas para esa cantidad
-    if (this.selectedZone && this.selectedFecha && this.selectedHora) {
-      const mesaDisponible = this.reservaService['findAvailableMesa'](
+    if (this.selectedZone && this.selectedFecha && (this.selectedHoras.length > 0 || this.selectedHora)) {
+      const horasToCheck = this.selectedHoras.length > 0 ? this.selectedHoras : [this.selectedHora];
+
+      const mesaDisponible = this.reservaService.findAvailableMesaForHours(
         this.selectedZone.id,
         this.selectedFecha,
-        this.selectedHora,
+        horasToCheck,
         cantidad
       );
 
       if (!mesaDisponible) {
-        this.errorMsg = `No hay mesas disponibles para ${cantidad} personas en ese horario`;
+        this.errorMsg = `No hay mesas disponibles para ${cantidad} personas en las horas seleccionadas`;
         this.mesasDisponibles = 0;
         return;
       }
@@ -178,31 +197,54 @@ export class ReservationsRegistroComponent implements OnInit {
       this.errorMsg = 'Datos incompletos';
       return;
     }
+    // Intentar crear la reserva(s)
+    if (this.selectedHoras.length > 0) {
+      const reservas = this.reservaService.addMultiple(
+        this.selectedFecha,
+        this.selectedHoras,
+        this.selectedCantidadPersonas,
+        nombre,
+        apellido,
+        telefono,
+        this.selectedRestaurant.id,
+        this.selectedZone.id
+      );
 
-    // Intentar crear la reserva (el servicio busca mesa disponible)
-    const reserva = this.reservaService.add(
-      this.selectedFecha,
-      this.selectedHora,
-      this.selectedCantidadPersonas,
-      nombre,
-      apellido,
-      telefono,
-      this.selectedRestaurant.id,
-      this.selectedZone.id
-    );
-
-    if (reserva) {
-      this.successMsg = `¡Reserva confirmada! ID: ${reserva.id}`;
-      this.form.reset();
-      this.currentStep = 'restaurant';
-      this.selectedRestaurant = null;
-      this.selectedZone = null;
-      setTimeout(() => {
-        this.router.navigate(['/reservations/list']);
-      }, 2000);
+      if (reservas && reservas.length > 0) {
+        this.successMsg = `¡Reserva confirmada! IDs: ${reservas.map(r => r.id).join(', ')}`;
+      } else {
+        this.errorMsg = 'No hay mesas disponibles en las horas seleccionadas. Por favor intenta con otra opción.';
+        return;
+      }
     } else {
-      this.errorMsg = 'No hay mesas disponibles en ese horario. Por favor intenta con otra opción.';
+      // reserva de una sola hora (compatibilidad)
+      const reserva = this.reservaService.add(
+        this.selectedFecha,
+        this.selectedHora,
+        this.selectedCantidadPersonas,
+        nombre,
+        apellido,
+        telefono,
+        this.selectedRestaurant.id,
+        this.selectedZone.id
+      );
+
+      if (reserva) {
+        this.successMsg = `¡Reserva confirmada! ID: ${reserva.id}`;
+      } else {
+        this.errorMsg = 'No hay mesas disponibles en ese horario. Por favor intenta con otra opción.';
+        return;
+      }
     }
+
+    this.form.reset();
+    this.currentStep = 'restaurant';
+    this.selectedRestaurant = null;
+    this.selectedZone = null;
+    this.selectedHoras = [];
+    setTimeout(() => {
+      this.router.navigate(['/reservations/list']);
+    }, 2000);
   }
 
   // Navegar entre pasos
@@ -217,7 +259,8 @@ export class ReservationsRegistroComponent implements OnInit {
       this.selectedZone = null;
       this.horarios = [];
       this.horariosDisponibles = [];
-      this.form.patchValue({ zoneId: '', fecha: '', hora: '' });
+      this.selectedHoras = [];
+      this.form.patchValue({ zoneId: '', fecha: '', hora: '', horas: [] });
     } else if (this.currentStep === 'people') {
       this.currentStep = 'date-time';
       this.selectedCantidadPersonas = 0;

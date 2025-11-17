@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
-import { Zone } from '../models';
+import { Zone, Mesa, Reservation } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +48,14 @@ export class ZonesService {
   remove(id: string): void {
     const zones = this.list().filter(z => z.id !== id);
     this.storage.set(this.key, zones);
+
+    const mesas = this.storage.get<Mesa[]>('mesas') || [];
+    const mesasFiltered = mesas.filter(m => m.zoneId !== id);
+    this.storage.set('mesas', mesasFiltered);
+
+    const reservations = this.storage.get<Reservation[]>('reservations') || [];
+    const reservationsFiltered = reservations.filter(r => r.zoneId !== id);
+    this.storage.set('reservations', reservationsFiltered);
   }
 
   // Actualizar horarios de una zona

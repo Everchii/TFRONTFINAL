@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
-import { Mesa } from '../models';
+import { Mesa, Reservation } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +47,9 @@ export class MesasService {
     let all = this.storage.get<Mesa[]>(this.key) || [];
     all = all.filter(m => m.id !== id);
     this.storage.set(this.key, all);
+
+    const reservations = this.storage.get<Reservation[]>('reservations') || [];
+    const reservationsFiltered = reservations.filter(r => r.idMesaAsignada !== id);
+    this.storage.set('reservations', reservationsFiltered);
   }
 }

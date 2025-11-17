@@ -78,7 +78,7 @@
           <td>{{ getRestaurantName(res.restaurantId) }}</td>
           <td>{{ getZoneName(res.zoneId) }}</td>
           <td>{{ res.fecha }}</td>
-          <td>{{ res.hora }}</td>
+          <td>{{ res.horas && res.horas.length > 0 ? (res.horas.join(', ')) : res.hora }}</td>
           <td>{{ res.cantidadPersonas }}</td>
           <td>{{ getMesaNumber(res.idMesaAsignada) }}</td>
           <td>{{ res.nombre }} {{ res.apellido }}</td>

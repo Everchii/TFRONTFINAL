@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
 import { Restaurant } from '../models';
+import { ZonesService } from './zones.service';
+import { MesasService } from './mesas.service';
+import { ReservationsService } from './reservations.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +11,12 @@ import { Restaurant } from '../models';
 export class RestaurantsService {
   private key = 'restaurants';
 
-  constructor(private storage: StorageService) {}
+  constructor(
+    private storage: StorageService,
+    private zonesService: ZonesService,
+    private mesasService: MesasService,
+    private reservationsService: ReservationsService
+  ) {}
 
   // Devuelve todos los restaurantes
   list(): Restaurant[] {
@@ -42,8 +50,30 @@ export class RestaurantsService {
     return true;
   }
 
-  // Elimina un restaurante por id
+  // Elimina un restaurante por id y TODO lo relacionado
   remove(id: string): void {
+    // 1) Obtener todas las zonas del restaurante
+    const zones = this.zonesService.list(id);
+
+    // 2) Por cada zona, eliminar mesas y reservas asociadas, y luego la zona
+    zones.forEach(zone => {
+      // Eliminar mesas de la zona
+      const mesas = this.mesasService.list(zone.id);
+      mesas.forEach(m => this.mesasService.remove(m.id));
+
+      // Eliminar reservas de esa zona (para ese restaurante)
+      const reservasZona = this.reservationsService.filter(id, zone.id);
+      reservasZona.forEach(r => this.reservationsService.remove(r.id));
+
+      // Eliminar la zona
+      this.zonesService.remove(zone.id);
+    });
+
+    // 3) Por seguridad extra, eliminar cualquier reserva que quede ligada al restaurante
+    const reservasRestaurante = this.reservationsService.filter(id);
+    reservasRestaurante.forEach(r => this.reservationsService.remove(r.id));
+
+    // 4) Finalmente, eliminar el restaurante
     const items = this.list().filter(i => i.id !== id);
     this.storage.set(this.key, items);
   }

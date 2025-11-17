@@ -53,23 +53,35 @@
       <input
         id="fecha"
         type="date"
-        [ngModel]="selectedFecha"
-        (change)="onFechaChange($event.target.value)"
+        [(ngModel)]="selectedFecha"
+        (ngModelChange)="onFechaChange($event)"
         [min]="'2025-11-16'"
         class="form-control"
       />
     </div>
 
+    <!-- Debug: mostrar horarios disponibles y selección actual (remover en producción) -->
+    <div class="form-group" *ngIf="selectedFecha">
+      <small class="text-muted">Horarios disponibles: {{ horariosDisponibles.length }} — {{ horariosDisponibles }} </small>
+      <br />
+      <small class="text-muted">Horas seleccionadas: {{ selectedHoras.length }} — {{ selectedHoras }}</small>
+    </div>
+
     <div class="form-group" *ngIf="selectedFecha && horariosDisponibles.length > 0">
-      <label>Horario disponible:</label>
+      <label>Horarios disponibles:</label>
       <div class="horarios-grid">
         <button
           *ngFor="let h of horariosDisponibles"
-          (click)="selectDatetime(selectedFecha, h)"
+          (click)="toggleHora(h)"
+          [class.selected]="selectedHoras.includes(h)"
           class="horario-btn"
+          type="button"
         >
           {{ h }}
         </button>
+      </div>
+      <div class="mt-2">
+        <button (click)="goToPeopleFromDatetime()" class="btn btn-primary" [disabled]="selectedHoras.length === 0">Siguiente</button>
       </div>
     </div>
 
@@ -84,7 +96,7 @@
   <div *ngIf="currentStep === 'people'" class="step">
     <h3>4. ¿Cuántas personas?</h3>
     <p class="breadcrumb">
-      Fecha: <strong>{{ selectedFecha }}</strong> | Hora: <strong>{{ selectedHora }}</strong>
+      Fecha: <strong>{{ selectedFecha }}</strong> | Horas: <strong>{{ selectedHoras.length > 0 ? (selectedHoras.join(', ')) : selectedHora }}</strong>
     </p>
 
     <div class="cantidad-selector">
@@ -181,8 +193,8 @@
         <span class="value">{{ selectedFecha }}</span>
       </div>
       <div class="review-item">
-        <span class="label">Hora:</span>
-        <span class="value">{{ selectedHora }}</span>
+        <span class="label">Hora(s):</span>
+        <span class="value">{{ selectedHoras && selectedHoras.length > 0 ? selectedHoras.join(', ') : selectedHora }}</span>
       </div>
       <div class="review-item">
         <span class="label">Personas:</span>
