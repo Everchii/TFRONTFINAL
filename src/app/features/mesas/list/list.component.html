@@ -1,13 +1,51 @@
-<h3>Mesas</h3>
+<section class="page-header">
+  <div class="header-left">
+    <h2>Mesas</h2>
+    <p class="muted">Administra mesas de las zonas.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn header-action-btn" (click)="createNew()">Nueva Mesa</button>
+  </div>
+</section>
 
-<!-- <button (click)="navigateToNewGlobal()">Nueva Mesa Global</button> -->
+<!-- Filtros -->
+<div class="filters-section" *ngIf="!zoneId">
+  <div class="filter-group">
+    <label for="restaurant-filter">Restaurante</label>
+    <select id="restaurant-filter" [(ngModel)]="selectedRestaurant" (change)="onRestaurantChange()">
+      <option value="">-- Todos los restaurantes --</option>
+      <option *ngFor="let r of restaurants" [value]="r.id">{{ r.nombre }}</option>
+    </select>
+  </div>
 
-<ul>
-  <li *ngFor="let m of mesas">
-    Mesa {{ m.numero }} - Capacidad: {{ m.capacidad }}
-    <button (click)="edit(m.id)">Editar</button>
-    <button (click)="remove(m.id)">Eliminar</button>
-  </li>
-</ul>
+  <div class="filter-group" *ngIf="restaurants.length > 0">
+    <label for="zone-filter">Zona</label>
+    <select id="zone-filter" [(ngModel)]="selectedZone" (change)="onZoneChange()">
+      <option value="">-- Todas las zonas --</option>
+      <option *ngFor="let z of zones" [value]="z.id">{{ z.nombre }}</option>
+    </select>
+  </div>
+</div>
 
-<button (click)="createNew()">Nueva Mesa</button>
+<!-- Mesas -->
+<div class="cards" *ngIf="mesas.length; else empty">
+  <div *ngFor="let m of mesas" class="card mesa-card">
+    <div class="card-body">
+      <div class="card-info">
+        <div class="card-title">Mesa {{ m.numero }}</div>
+        <div class="card-subtitle">Capacidad: {{ m.capacidad }} personas</div>
+      </div>
+      <div class="card-actions">
+        <button class="botonedit btn-sm" (click)="edit(m.id)">Editar</button>
+        <button class="botoneliminar btn-sm" (click)="remove(m.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #empty>
+  <div class="empty-state">
+    <p>No hay mesas. Crea una para comenzar.</p>
+  </div>
+</ng-template>
+

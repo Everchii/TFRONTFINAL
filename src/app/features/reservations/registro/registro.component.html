@@ -1,0 +1,211 @@
+<div class="reservations-registro">
+  <h2>Nueva Reserva</h2>
+
+  <div *ngIf="successMsg" class="alert alert-success">
+    {{ successMsg }}
+  </div>
+
+  <div *ngIf="errorMsg" class="alert alert-error">
+    {{ errorMsg }}
+  </div>
+
+  <!-- PASO 1: Seleccionar Restaurante -->
+  <div *ngIf="currentStep === 'restaurant'" class="step">
+    <h3>1. Selecciona un restaurante</h3>
+    <div class="options-grid">
+      <button
+        *ngFor="let r of restaurants"
+        (click)="selectRestaurant(r.id)"
+        class="option-btn"
+      >
+        {{ r.nombre }}
+      </button>
+    </div>
+  </div>
+
+  <!-- PASO 2: Seleccionar Zona -->
+  <div *ngIf="currentStep === 'zone'" class="step">
+    <h3>2. Selecciona una zona</h3>
+    <p *ngIf="selectedRestaurant" class="breadcrumb">
+      Restaurante: <strong>{{ selectedRestaurant.nombre }}</strong>
+    </p>
+    <div class="options-grid">
+      <button
+        *ngFor="let z of zones"
+        (click)="selectZone(z.id)"
+        class="option-btn"
+      >
+        {{ z.nombre }}
+      </button>
+    </div>
+    <button (click)="goBack()" class="btn btn-secondary">Atrás</button>
+  </div>
+
+  <!-- PASO 3: Seleccionar Fecha y Hora -->
+  <div *ngIf="currentStep === 'date-time'" class="step">
+    <h3>3. Selecciona fecha y horario</h3>
+    <p *ngIf="selectedZone" class="breadcrumb">
+      Zona: <strong>{{ selectedZone.nombre }}</strong>
+    </p>
+
+    <div class="form-group">
+      <label for="fecha">Fecha:</label>
+      <input
+        id="fecha"
+        type="date"
+        [ngModel]="selectedFecha"
+        (change)="onFechaChange($event.target.value)"
+        [min]="'2025-11-16'"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group" *ngIf="selectedFecha && horariosDisponibles.length > 0">
+      <label>Horario disponible:</label>
+      <div class="horarios-grid">
+        <button
+          *ngFor="let h of horariosDisponibles"
+          (click)="selectDatetime(selectedFecha, h)"
+          class="horario-btn"
+        >
+          {{ h }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="selectedFecha && horariosDisponibles.length === 0" class="alert alert-warning">
+      No hay horarios disponibles para la fecha seleccionada
+    </div>
+
+    <button (click)="goBack()" class="btn btn-secondary">Atrás</button>
+  </div>
+
+  <!-- PASO 4: Cantidad de Personas -->
+  <div *ngIf="currentStep === 'people'" class="step">
+    <h3>4. ¿Cuántas personas?</h3>
+    <p class="breadcrumb">
+      Fecha: <strong>{{ selectedFecha }}</strong> | Hora: <strong>{{ selectedHora }}</strong>
+    </p>
+
+    <div class="cantidad-selector">
+      <button
+        *ngFor="let n of [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20]"
+        (click)="setCantidad(n)"
+        class="cantidad-btn"
+      >
+        {{ n }}
+      </button>
+    </div>
+
+    <p *ngIf="selectedCantidadPersonas > 0" class="selected-cantidad">
+      Personas seleccionadas: <strong>{{ selectedCantidadPersonas }}</strong>
+      <span *ngIf="mesasDisponibles > 0" class="availability-msg success">
+        ✓ Mesa disponible
+      </span>
+    </p>
+
+    <div *ngIf="errorMsg" class="alert alert-warning">
+      {{ errorMsg }}
+    </div>
+
+    <button (click)="goBack()" class="btn btn-secondary">Atrás</button>
+  </div>
+
+  <!-- PASO 5: Datos del Cliente -->
+  <div *ngIf="currentStep === 'customer'" class="step">
+    <h3>5. Datos de contacto</h3>
+
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input
+          id="nombre"
+          type="text"
+          formControlName="nombre"
+          class="form-control"
+          placeholder="Tu nombre"
+        />
+        <small *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched" class="error">
+          Mínimo 2 caracteres
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="apellido">Apellido:</label>
+        <input
+          id="apellido"
+          type="text"
+          formControlName="apellido"
+          class="form-control"
+          placeholder="Tu apellido"
+        />
+        <small *ngIf="form.get('apellido')?.invalid && form.get('apellido')?.touched" class="error">
+          Mínimo 2 caracteres
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono:</label>
+        <input
+          id="telefono"
+          type="tel"
+          formControlName="telefono"
+          class="form-control"
+          placeholder="Tu teléfono"
+        />
+        <small *ngIf="form.get('telefono')?.invalid && form.get('telefono')?.touched" class="error">
+          Mínimo 7 caracteres
+        </small>
+      </div>
+    </form>
+
+    <button (click)="goToReview()" class="btn btn-primary">Siguiente</button>
+    <button (click)="goBack()" class="btn btn-secondary">Atrás</button>
+  </div>
+
+  <!-- PASO 6: Revisar y Confirmar -->
+  <div *ngIf="currentStep === 'review'" class="step">
+    <h3>6. Revisar tu reserva</h3>
+
+    <div class="review-section">
+      <div class="review-item">
+        <span class="label">Restaurante:</span>
+        <span class="value">{{ selectedRestaurant?.nombre }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Zona:</span>
+        <span class="value">{{ selectedZone?.nombre }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Fecha:</span>
+        <span class="value">{{ selectedFecha }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Hora:</span>
+        <span class="value">{{ selectedHora }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Personas:</span>
+        <span class="value">{{ selectedCantidadPersonas }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Nombre:</span>
+        <span class="value">{{ form.get('nombre')?.value }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Apellido:</span>
+        <span class="value">{{ form.get('apellido')?.value }}</span>
+      </div>
+      <div class="review-item">
+        <span class="label">Teléfono:</span>
+        <span class="value">{{ form.get('telefono')?.value }}</span>
+      </div>
+    </div>
+
+    <button (click)="confirmReservation()" class="btn btn-success btn-large">
+      Confirmar Reserva
+    </button>
+    <button (click)="goBack()" class="btn btn-secondary">Editar</button>
+    <button (click)="cancel()" class="btn btn-danger">Cancelar</button>
+  </div>
+</div>

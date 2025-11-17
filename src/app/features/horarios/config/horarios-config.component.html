@@ -1,0 +1,51 @@
+<section class="form-page" *ngIf="zone">
+  <header class="form-header">
+    <h2>Configurar Horarios</h2>
+    <p class="subtitle">{{ zone.nombre }} — Define los horarios disponibles para reservas</p>
+  </header>
+
+  <div class="card form-card">
+    <div class="form-section">
+      <h3>Agregar Horario</h3>
+      <div class="input-group">
+        <input
+          type="time"
+          [(ngModel)]="nuevoHorario"
+          placeholder="HH:MM"
+          class="time-input"
+        />
+        <button (click)="addHorario()" class="botoncrear btn-primary btn-sm">Agregar</button>
+      </div>
+
+      <div *ngIf="errorMsg" class="alert alert-error">
+        {{ errorMsg }}
+      </div>
+    </div>
+
+    <div class="horarios-list">
+      <h3>Horarios disponibles</h3>
+      <ul *ngIf="zone.horarios.length > 0">
+        <li *ngFor="let h of zone.horarios" class="horario-item">
+          <span class="horario-time">{{ h }}</span>
+          <button (click)="removeHorario(h)" class="botoneliminar btn-danger btn-sm">
+            Eliminar
+          </button>
+        </li>
+      </ul>
+      <p *ngIf="zone.horarios.length === 0" class="empty">
+        Sin horarios configurados. Agrega uno para comenzar.
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <button (click)="back()" class="botonback">Volver</button>
+    </div>
+  </div>
+</section>
+
+<div *ngIf="!zone" class="card">
+  <div class="alert alert-error">
+    <p>Zona no encontrada.</p>
+    <button (click)="back()" class="botonback btn-primary">Volver</button>
+  </div>
+</div>

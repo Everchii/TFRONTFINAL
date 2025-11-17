@@ -49,4 +49,34 @@ export class ZonesService {
     const zones = this.list().filter(z => z.id !== id);
     this.storage.set(this.key, zones);
   }
+
+  // Actualizar horarios de una zona
+  setHorarios(zoneId: string, horarios: string[]): boolean {
+    const zones = this.list();
+    const idx = zones.findIndex(z => z.id === zoneId);
+    if (idx === -1) return false;
+    zones[idx].horarios = horarios;
+    this.storage.set(this.key, zones);
+    return true;
+  }
+
+  // Agregar un horario a una zona
+  addHorario(zoneId: string, horario: string): boolean {
+    const zone = this.get(zoneId);
+    if (!zone) return false;
+    if (!zone.horarios.includes(horario)) {
+      zone.horarios.push(horario);
+      zone.horarios.sort();
+      return this.update(zone);
+    }
+    return true;
+  }
+
+  // Eliminar un horario de una zona
+  removeHorario(zoneId: string, horario: string): boolean {
+    const zone = this.get(zoneId);
+    if (!zone) return false;
+    zone.horarios = zone.horarios.filter(h => h !== horario);
+    return this.update(zone);
+  }
 }

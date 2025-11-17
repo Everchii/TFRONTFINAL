@@ -56,9 +56,11 @@ export class MesaFormGlobalComponent implements OnInit {
 
     const { restaurantId, zoneId, numero, capacidad } = this.form.value;
 
+    console.log('Guardando mesa:', { restaurantId, zoneId, numero, capacidad });
+
     this.ms.add(numero, capacidad, zoneId);
 
-    alert('Mesa creada con éxito!');
+    // Mensaje nativo eliminado por petición del usuario
     this.router.navigate(['/mesas']);
   }
 

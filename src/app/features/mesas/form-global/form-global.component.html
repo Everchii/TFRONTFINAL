@@ -1,32 +1,41 @@
-<h3>Nueva Mesa (Global)</h3>
+<section class="form-page">
+  <header class="form-header">
+    <h2>Nueva Mesa</h2>
+    <p class="subtitle">Crea una mesa seleccionando restaurante y zona.</p>
+  </header>
 
-<form [formGroup]="form" (ngSubmit)="save()">
-  <label>
-    Restaurante:
-    <select formControlName="restaurantId">
-      <option value="" disabled selected>-- Seleccione un restaurante --</option>
-      <option *ngFor="let r of restaurants" [value]="r.id">{{ r.nombre }}</option>
-    </select>
-  </label>
+  <div class="card form-card">
+    <form [formGroup]="form" (ngSubmit)="save()" class="form">
+      <div class="form-group">
+        <label for="restaurantId">Restaurante</label>
+        <select id="restaurantId" formControlName="restaurantId">
+          <option value="" disabled selected>-- Seleccione un restaurante --</option>
+          <option *ngFor="let r of restaurants" [value]="r.id">{{ r.nombre }}</option>
+        </select>
+      </div>
 
-  <label>
-    Zona:
-    <select formControlName="zoneId">
-      <option value="" disabled selected>-- Seleccione una zona --</option>
-      <option *ngFor="let z of zones" [value]="z.id">{{ z.nombre }}</option>
-    </select>
-  </label>
+      <div class="form-group">
+        <label for="zoneId">Zona</label>
+        <select id="zoneId" formControlName="zoneId">
+          <option value="" disabled selected>-- Seleccione una zona --</option>
+          <option *ngFor="let z of zones" [value]="z.id">{{ z.nombre }}</option>
+        </select>
+      </div>
 
-  <label>
-    Número de mesa:
-    <input type="number" formControlName="numero" />
-  </label>
+      <div class="form-group">
+        <label for="numero">Número de Mesa</label>
+        <input id="numero" type="number" formControlName="numero" placeholder="Ej: 1" />
+      </div>
 
-  <label>
-    Capacidad:
-    <input type="number" formControlName="capacidad" />
-  </label>
+      <div class="form-group">
+        <label for="capacidad">Capacidad (personas)</label>
+        <input id="capacidad" type="number" formControlName="capacidad" placeholder="Ej: 4" />
+      </div>
 
-  <button type="submit">Crear Mesa</button>
-  <button type="button" (click)="cancel()">Cancelar</button>
-</form>
+      <div class="form-actions">
+        <button type="submit" class="botoncrear btn-primary">Crear Mesa</button>
+        <button type="button" class="botoncancelar" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</section>

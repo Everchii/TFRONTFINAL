@@ -1,27 +1,30 @@
+/** Restaurante */
 export interface Restaurant {
   id: string;
   nombre: string;
 }
 
+/** Zona o ambiente de un restaurante */
 export interface Zone {
   id: string;
   nombre: string;
   restaurantId: string;
-  horarios: string[];
+  horarios: string[]; // ej: ["11:00", "12:00", "13:00", "20:00", "21:00"]
 }
 
-export interface Table {
+/** Mesa de una zona */
+export interface Mesa {
   id: string;
   numero: number;
   capacidad: number;
   zoneId: string;
-  restaurantId: string;
 }
 
+/** Reserva de una mesa */
 export interface Reservation {
   id: string;
-  fecha: string;   
-  hora: string;    
+  fecha: string;           // ej: "2025-11-20"
+  hora: string;            // ej: "20:00"
   cantidadPersonas: number;
   idMesaAsignada: string;
   nombre: string;
@@ -29,21 +32,6 @@ export interface Reservation {
   telefono: string;
   restaurantId: string;
   zoneId: string;
-}
-
-// este ya es para las zonas
-export interface Zone {
-  id: string;
-  nombre: string;
-  restaurantId: string; // para saber a qué restaurante pertenece
-}
-
-// para las mesas
-export interface Mesa {
-  id: string;
-  numero: number;
-  capacidad: number;
-  zoneId: string; // La zona a la que pertenece
 }
 
 

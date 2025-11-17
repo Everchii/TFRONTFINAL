@@ -1,15 +1,25 @@
-<h2>Restaurantes</h2>
+<section class="page-header">
+  <div class="header-left">
+    <h2>Restaurantes</h2>
+    <p class="muted">Gestiona tus restaurantes y crea zonas/mesas para cada uno.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-success" (click)="createNew()">+ Nuevo Restaurante</button>
+  </div>
+</section>
 
-<ul>
-  <li *ngFor="let r of restaurants">
-    {{ r.nombre }}
-    <button (click)="edit(r.id)">Editar</button>
-    <button (click)="remove(r.id)">Eliminar</button>
-    <button (click)="createNewZone(r.id)">Nueva Zona</button>
-  </li>
-</ul>
 
-<button (click)="createNew()">Nuevo restaurante</button>
+<div class="cards">
+  <div *ngFor="let r of restaurants" class="card restaurant-card">
+    <div class="card-body">
+      <div class="card-title">{{ r.nombre }}</div>
+      <div class="card-actions">
+        <button class="botonedit btn-sm" (click)="edit(r.id)">Editar</button>
+        <button class="botonnueva btn-sm" (click)="createNewZone(r.id)">Nueva Zona</button>
+        <button class="botoneliminar btn-sm" (click)="remove(r.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- BOTÓN NUEVO: Crear Mesa Global desde el menú principal -->
-<button (click)="createNewMesaGlobal()">Nueva Mesa Global</button>
+

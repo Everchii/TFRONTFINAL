@@ -1,24 +1,33 @@
-<h2>{{ editingId ? 'Editar Mesa' : 'Nueva Mesa' }}</h2>
+<section class="form-page">
+  <header class="form-header">
+    <h2>{{ editingId ? 'Editar Mesa' : 'Nueva Mesa' }}</h2>
+    <p class="subtitle">Completa los detalles de la mesa.</p>
+  </header>
 
-<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="card form-card">
+    <form [formGroup]="form" (ngSubmit)="save()" class="form">
+      <div class="form-group">
+        <label for="numero">Número de Mesa</label>
+        <input id="numero" type="number" formControlName="numero" placeholder="Ej: 1" />
+      </div>
 
-  <label>
-    Número de mesa:
-    <input type="number" formControlName="numero" />
-  </label>
+      <div class="form-group">
+        <label for="capacidad">Capacidad (personas)</label>
+        <input id="capacidad" type="number" formControlName="capacidad" placeholder="Ej: 4" />
+      </div>
 
-  <label>
-    Capacidad:
-    <input type="number" formControlName="capacidad" />
-  </label>
+      <div class="form-group">
+        <label for="zoneId">Zona</label>
+        <select id="zoneId" formControlName="zoneId">
+          <option value="">Selecciona una zona</option>
+          <option *ngFor="let z of zonas" [value]="z.id">{{ z.nombre }}</option>
+        </select>
+      </div>
 
-  <label>
-    Zona:
-    <select formControlName="zoneId">
-      <option *ngFor="let z of zonas" [value]="z.id">{{ z.nombre }}</option>
-    </select>
-  </label>
-
-  <button type="submit">{{ editingId ? 'Guardar' : 'Crear' }}</button>
-  <button type="button" (click)="cancel()">Cancelar</button>
-</form>
+      <div class="form-actions">
+        <button type="submit" class="botoncrear btn-primary">{{ editingId ? 'Guardar Cambios' : 'Crear Mesa' }}</button>
+        <button type="button" class="botoncancelar" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</section>

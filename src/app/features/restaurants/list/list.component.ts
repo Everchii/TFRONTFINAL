@@ -33,7 +33,7 @@ export class RestaurantsListComponent implements OnInit {
   }
 
   remove(id: string) {
-    if (!confirm('¿Confirmás eliminar este restaurante?')) return;
+    // Eliminada confirmación modal nativa por petición del usuario
     this.rs.remove(id);
     this.load();
   }
@@ -42,9 +42,5 @@ export class RestaurantsListComponent implements OnInit {
   createNewZone(restaurantId: string) {
     this.router.navigate(['/zones/new'], { queryParams: { restaurantId } });
   }
-
-  // --- NUEVO MÉTODO PARA CREAR MESA GLOBAL ---
-  createNewMesaGlobal() {
-    this.router.navigate(['/mesas/new-global']);
-  }
+  // nota: accesos a mesas globales y reservas están disponibles en el navbar
 }

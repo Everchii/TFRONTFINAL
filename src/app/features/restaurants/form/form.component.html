@@ -1,19 +1,23 @@
-<h2>{{ editingId ? 'Editar Restaurante' : 'Nuevo Restaurante' }}</h2>
+<section class="form-page">
+  <header class="form-header">
+    <h2>{{ editingId ? 'Editar Restaurante' : 'Nuevo Restaurante' }}</h2>
+    <p class="subtitle">Completa los detalles del restaurante.</p>
+  </header>
 
-<form [formGroup]="form" (ngSubmit)="save()">
-  <label>
-    Nombre:
-    <input formControlName="nombre" />
-  </label>
+  <div class="card form-card">
+    <form [formGroup]="form" (ngSubmit)="save()" class="form">
+      <div class="form-group">
+        <label for="nombre">Nombre del Restaurante</label>
+        <input id="nombre" type="text" formControlName="nombre" placeholder="Ej: Mi Restaurante" />
+      </div>
 
-  <button type="submit">{{ editingId ? 'Guardar' : 'Crear' }}</button>
-  <button type="button" (click)="cancel()">Cancelar</button>
-
-  <!-- BOTÓN NUEVA ZONA solo si estamos editando -->
-  <!-- <button *ngIf="editingId" type="button" (click)="createNewZone()">Nueva Zona</button> -->
-</form>
+      <div class="form-actions">
+        <button type="submit" class="botoncrear btn-primary">{{ editingId ? 'Guardar Cambios' : 'Crear Restaurante' }}</button>
+        <button type="button" class="botoncancelar" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</section>
 
 <!-- Lista de zonas (opcional, puedes mantener ZonesListComponent aquí) -->
-<!-- <app-zones-list [restaurantId]="editingId"></app-zones-list> -->
-
 <app-zones-list *ngIf="editingId" [restaurantId]="editingId"></app-zones-list>

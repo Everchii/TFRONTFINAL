@@ -1,15 +1,41 @@
-<h3>Zonas</h3>
+<section class="page-header">
+  <div class="header-left">
+    <h2>Zonas</h2>
+    <p class="muted">Administra zonas de tus restaurantes.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" (click)="createNew()"> + Nueva Zona</button>
+  </div>
+</section>
 
-<button (click)="createNew()">Nueva Zona</button>
+<!-- Filtro por restaurante -->
+<div class="filters-section" *ngIf="!restaurantId">
+  <div class="filter-group">
+    <label for="restaurant-filter">Restaurante</label>
+    <select id="restaurant-filter" [(ngModel)]="selectedRestaurant" (change)="onRestaurantChange()">
+      <option value="">-- Todos los restaurantes --</option>
+      <option *ngFor="let r of restaurants" [value]="r.id">{{ r.nombre }}</option>
+    </select>
+  </div>
+</div>
 
-<ul *ngIf="zones.length; else empty">
-  <li *ngFor="let z of zones">
-    {{ z.nombre }}
-    <button (click)="edit(z.id)">Editar</button>
-    <button (click)="remove(z.id)">Eliminar</button>
-  </li>
-</ul>
+<!-- Zonas -->
+<div class="cards" *ngIf="zones.length; else empty">
+  <div *ngFor="let z of zones" class="card zone-card">
+    <div class="card-body">
+      <div class="card-title">{{ z.nombre }}</div>
+      <div class="card-actions">
+        <button class="botonedit btn-sm" (click)="edit(z.id)">Editar</button>
+        <button class="botonver btn-sm" (click)="configHorarios(z.id)">Horarios</button>
+        <button class="botoneliminar btn-sm" (click)="remove(z.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <ng-template #empty>
-  <p>No hay zonas. Creá una.</p>
+  <div class="empty-state">
+    <p>No hay zonas. Crea una para comenzar.</p>
+  </div>
 </ng-template>
+
