@@ -5,16 +5,17 @@
   </header>
 
   <div class="card form-card">
+    <!-- Agregar horario -->
     <div class="form-section">
       <h3>Agregar Horario</h3>
       <div class="input-group">
         <input
           type="time"
           [(ngModel)]="nuevoHorario"
-          placeholder="HH:MM"
           class="time-input"
+          placeholder="HH:MM"
         />
-        <button (click)="addHorario()" class="botoncrear btn-primary btn-sm">Agregar</button>
+        <button (click)="addHorario()" class="btn btn-primary">Agregar</button>
       </div>
 
       <div *ngIf="errorMsg" class="alert alert-error">
@@ -22,12 +23,13 @@
       </div>
     </div>
 
+    <!-- Lista de horarios -->
     <div class="horarios-list">
       <h3>Horarios disponibles</h3>
       <ul *ngIf="zone.horarios.length > 0">
         <li *ngFor="let h of zone.horarios" class="horario-item">
           <span class="horario-time">{{ h }}</span>
-          <button (click)="removeHorario(h)" class="botoneliminar btn-danger btn-sm">
+          <button (click)="removeHorario(h)" class="btn btn-danger btn-sm">
             Eliminar
           </button>
         </li>
@@ -37,8 +39,9 @@
       </p>
     </div>
 
+    <!-- Botón volver -->
     <div class="form-actions">
-      <button (click)="back()" class="botonback">Volver</button>
+      <button (click)="back()" class="btn btn-secondary">Volver</button>
     </div>
   </div>
 </section>
@@ -46,6 +49,6 @@
 <div *ngIf="!zone" class="card">
   <div class="alert alert-error">
     <p>Zona no encontrada.</p>
-    <button (click)="back()" class="botonback btn-primary">Volver</button>
+    <button (click)="back()" class="btn btn-primary">Volver</button>
   </div>
 </div>

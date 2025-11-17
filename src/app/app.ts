@@ -15,7 +15,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
           <a [routerLink]="['/zones']" routerLinkActive="active">Zonas</a>
           <a [routerLink]="['/mesas']" routerLinkActive="active">Mesas</a>
           <a [routerLink]="['/reservations/new']" class="btn btn-sm btn-primary">Nueva Reserva</a>
-          <a [routerLink]="['/reservations/list']" class="btn btn-sm">Mis Reservas</a>
+          <a [routerLink]="['/reservations/list']" class="btn btn-sm" style="box-shadow:none;transform:none">Mis Reservas</a>
         </nav>
       </div>
     </header>

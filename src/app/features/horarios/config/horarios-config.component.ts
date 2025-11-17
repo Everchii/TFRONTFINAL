@@ -50,6 +50,7 @@ export class HorariosConfigComponent implements OnInit {
     }
 
     this.zs.addHorario(this.zone.id, horario);
+    this.refreshZone();
     this.nuevoHorario = '';
     this.errorMsg = '';
   }
@@ -57,6 +58,12 @@ export class HorariosConfigComponent implements OnInit {
   removeHorario(horario: string): void {
     if (this.zone) {
       this.zs.removeHorario(this.zone.id, horario);
+      this.refreshZone();
+    }
+  }
+  private refreshZone() {
+    if (this.zone) {
+      this.zone = this.zs.get(this.zone.id) || null;
     }
   }
 
